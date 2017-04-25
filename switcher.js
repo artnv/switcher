@@ -1,11 +1,11 @@
 var switcher = {};
 switcher.items = function (userConfig) {
-	
+
 	// =============================== Vars
 	var 
 		R = {},
-		cacheElement, // Для выключения элемента, который ранее был включен
-		lock = false; // если true, перестает реагировать на события, пока не будет вызван метод .next()
+		_cacheElement, // Для выключения элемента, который ранее был включен
+		_lock = false; // Включается методом .stop(). Если true, перестает реагировать на события, пока не будет вызван метод .next()
 		
 		// Конфиг
 		R._cfg = {
@@ -16,7 +16,6 @@ switcher.items = function (userConfig) {
 		// Блоки
 		R._blocks = {
 			arr: null,
-			arrLn: null,
 			turnOn: function() { this.style.display = "block"; },
 			turnOff: function() { this.style.display = "none"; }
 		};
@@ -25,7 +24,6 @@ switcher.items = function (userConfig) {
 		R._tabs = {
 			parentElem: null,
 			arr: null,
-			arrLn: null,
 			turnOn: function() { this.style.fontWeight = "bold"; },
 			turnOff: function() { this.style.fontWeight = "normal"; }
 		};
@@ -36,29 +34,30 @@ switcher.items = function (userConfig) {
 	
 	// Перестает реагировать на события, например пока анимация не завершится
 	R.stop = function () {
-		lock = true;
+		_lock = true;
 	};
 	
 	// Возобновляет реагирование на события
 	R.next = function () {
-		lock = false;
+		_lock = false;
 	};
 	
 	// Обработчик событий, который вызывает методы turnOn
 	R._listener = function () {
+		
 		// Если есть родительский элемент, то вешаем один обработчик
 		if(R._tabs.parentElem) {
 			R._tabs.parentElem.addEventListener(R._cfg.eventMethod, function(e) {
 				
 				// Блокировщик событий .stop() / .next()
-				if(!lock) {
+				if(!_lock) {
 					R.turnOn(e.target);
 				}
 				
 			});
 		} else {
-			// вешаем обработчики на все элементы, если нет родительского id
-			// Реализация пока отложена
+			// Вешаем обработчики на все элементы, если нет родительского id
+			// Реализация отложена
 			console.log('not found parentElem');
 		}
 	};
@@ -74,7 +73,6 @@ switcher.items = function (userConfig) {
 	R.addBlocks = function (QSA, turnOn, turnOff) {
 		
 		R._blocks.arr 		= 	document.querySelectorAll(QSA);
-		R._blocks.arrLn 	= 	R._blocks.arr.length;
 		
 		if(typeof turnOn === "function") {
 			R._blocks.turnOn	= 	turnOn;
@@ -90,7 +88,6 @@ switcher.items = function (userConfig) {
 	R.addTabs = function (QSA, turnOn, turnOff) {
 		
 		R._tabs.arr 		= 	document.querySelectorAll(QSA);
-		R._tabs.arrLn 		= 	R._tabs.arr.length;
 		R._tabs.parentElem	=	R._getId(QSA);
 		
 		if(typeof turnOn === "function") {
@@ -107,54 +104,62 @@ switcher.items = function (userConfig) {
 	
 	// Выключает предыдущий элемент
 	R.turnOff = function() {
-	
+		
+		var 
+			i 		= R._tabs.arr.length,
+			tabs 	= R._tabs,
+			blocks	= R._blocks;
+		
 		// Если первый запуск, отключаем все элементы
-		if(typeof cacheElement !== "number") {
-			
-			for(var i=R._tabs.arrLn;i--;) {
+		if(typeof _cacheElement !== "number") {
+
+			while(i--) {
 				
-				R._blocks.turnOff.call(R._blocks.arr[i]);
+				blocks.turnOff.call(blocks.arr[i]);
 				
-				if(R._tabs.turnOff) {
-					R._tabs.turnOff.call(R._tabs.arr[i]);
+				if(tabs.turnOff) {
+					tabs.turnOff.call(tabs.arr[i]);
 				}
 				
 			}
 
-		} else {
-			// Все последующие запуски, после очистки
-		
-
-			// Выключаем предыдущие элементы, блоки и табы
-			R._blocks.turnOff.call(R._blocks.arr[cacheElement]);
+		} else { // Все последующие запуски, после очистки
 			
-			if(R._tabs.turnOff) {
-				R._tabs.turnOff.call(R._tabs.arr[cacheElement]);
+			// Выключаем предыдущие элементы, блоки и табы
+			blocks.turnOff.call(blocks.arr[_cacheElement]);
+			
+			if(tabs.turnOff) {
+				tabs.turnOff.call(tabs.arr[_cacheElement]);
 			}
 			
 		}
-		
-		
+	
 	}
 	
 	// Сначала все выключает, а потом включает конкретный блок и таб, по индексу или по e.target
 	R.turnOn = function(ObjOrNum) {
 		
-		var check; // функция проверки меняет условия в зависимости от параметров.  Цифра/Объект
+		var 
+			check, // функция проверки меняет условия в зависимости от параметров.  Цифра/Объект
+			arrLn	= R._tabs.arr.length,
+			i		= arrLn,
+			tabs 	= R._tabs,
+			blocks	= R._blocks,
+			cfg		= R._cfg;
 		
 		// формирование функции + дополнительная проверка на допустимый лимит в цифрах
 		switch(typeof ObjOrNum) {
 			case "object":
 			
 				check = function(i) {
-					if(ObjOrNum === R._tabs.arr[i]) return true; else return false;
+					if(ObjOrNum === tabs.arr[i]) return true; else return false;
 				};
 				
 			break;
 			case "number":
 			
 				// Проверка допустимого лимита
-				if(ObjOrNum > (R._tabs.arrLn-1) || ObjOrNum < 0) {
+				if(ObjOrNum > (arrLn-1) || ObjOrNum < 0) {
 					return false;
 				}
 			
@@ -169,19 +174,18 @@ switcher.items = function (userConfig) {
 		}
 		
 		
-		
 		// Включает конкретный блок и таб
-		for(var i=R._tabs.arrLn;i--;) {
+		while(i--) {
 			if(check(i)) {
 				
 				// Если повторный клик по тому же элементу
-				if(cacheElement === i) {
+				if(_cacheElement === i) {
 					
 					// Если true, тогда при повторном нажатии на таб, применяется метод turnOff
-					if(R._cfg.backClickTurnOff) {
+					if(cfg.backClickTurnOff) {
 						
 						R.turnOff();
-						cacheElement = null;
+						_cacheElement = null;
 						
 					} else return true;
 					
@@ -191,15 +195,15 @@ switcher.items = function (userConfig) {
 					R.turnOff();
 
 					// Включение блоков
-					R._blocks.turnOn.call(R._blocks.arr[i]);
+					blocks.turnOn.call(blocks.arr[i]);
 					
 					// и табов
-					if(R._tabs.turnOn) {
-						R._tabs.turnOn.call(R._tabs.arr[i]);
+					if(tabs.turnOn) {
+						tabs.turnOn.call(tabs.arr[i]);
 					}
 					
 					// Кешируем элемент который собираемся включить, чтобы потом его же и отключить
-					cacheElement = i;
+					_cacheElement = i;
 					
 					// Выходим, т.к. нашли то что искали
 					break;
@@ -208,8 +212,6 @@ switcher.items = function (userConfig) {
 			}
 
 		}
-		
-	
 		
 	}
 	
@@ -229,6 +231,7 @@ switcher.items = function (userConfig) {
 		}
 		
 	}
+	
 	
 	// Новый экземпляр
 	return Object.create(R);	
