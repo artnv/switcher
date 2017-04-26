@@ -3,22 +3,33 @@ var switcher = {};
 switcher.vars = {
 	_enemyArr: [],
 	_enemyElemCache: null,
-	_enemiesEnabled: false
+	_enemiesEnabled: false,
+	
+	_friendsArgsArr: []
 };
 
 // Вызывается во всех методах
 switcher.vars._enemyObserver = function(thatObj) {
-
-	var
-		vars 	= switcher.vars;
-		obj 	= vars._enemyArr,
-		i 		= vars._enemyArr.length,
-		cache	= vars._enemyElemCache;
 	
-	// Если есть кеш преыдущего объекта
+	// thatObj - Объект элемент по которому кликнули
+	
+	var
+		vars 				= switcher.vars,
+		obj 				= vars._enemyArr,
+		i 					= vars._enemyArr.length,
+		cache				= vars._enemyElemCache;
+	
+	
+	// Если есть кеш предыдущего объекта
 	if(vars._enemyElemCache) {
 		
-		vars._enemyElemCache.clearCache(); // очищаем кеш повторного нажатия, в предыдущем объекте из массива
+		// Очищаем кеш повторного нажатия, в предыдущем объекте из массива
+		vars._enemyElemCache.clearCache(); 
+		
+		// Проверяем дружественные объекты, если есть выходим и не даем их отключить
+		if(vars.checkFriends(thatObj, vars._enemyElemCache)) {
+			return true;
+		}
 		
 		// Если это повторное нажатие, выходим
 		if(Object.getPrototypeOf(vars._enemyElemCache) === thatObj) {
@@ -40,6 +51,13 @@ switcher.vars._enemyObserver = function(thatObj) {
 				vars._enemyElemCache.turnOff();
 				vars._enemyElemCache = obj[i]; // кешируем текущий
 				
+				if(vars._friendsArgsArr.length > 0) {
+					
+					// Отключение активных объектов из addFriends
+					vars._turnOffAllFriends();
+
+				}
+				
 				//break;
 			}
 
@@ -55,12 +73,12 @@ switcher.vars._enemyObserver = function(thatObj) {
 
 
 // Добавляет объекты в массив
-switcher.enemies = function() {
+switcher.addEnemies = function() {
+	
 	var
 		args 	= arguments,
 		i 		= args.length,
-		vars 	= switcher.vars,
-		arr		= vars._enemyArr;
+		vars 	= switcher.vars;
 	
 	// Активизируем метод _enemyObserver
 	if(i > 0) {
@@ -70,16 +88,116 @@ switcher.enemies = function() {
 	// Добавляем элементы
 	while(i--) {
 		if(typeof args[i] === "object") {
-			arr.push(args[i]);
+			vars._enemyArr.push(args[i]);
+		}
+	}
+	
+
+};
+
+// Добавляет группы-объектов которые не будут выключены после addEnemies
+switcher.addFriends = function() {
+	
+	var
+		args 	= arguments,
+		i 		= args.length,
+		e		= 0,
+		k		= 0;
+		
+		switcher.vars._friendsArgsArr = args;
+	
+	// По аргументам
+	while(i--) {
+		if(Array.isArray(args[i])) {
+			//vars._friendsArr.push(args[i]);
+			e = args[i].length;
+		
+			// По массиву в одном из аргументов
+			while(e--) {
+				
+				k = args[i].length;
+				
+				// По тому же массиву, добавляя соседние объекты, при этом исключив себя
+				while(k--) {
+					
+					// Если находим себя, то пропускаем
+					if(args[i][e] !== args[i][k]) {
+						
+						// Добавляем дружественные объекты в массив
+						args[i][e]._friendsObjArr.push(args[i][k]);
+						
+					}
+					
+				}
+				
+			}
+
 		}
 	}
 
 };
 
-friends = function() {
+// Отключает все дружественные элементы. Т.к. кеш тут не срабатывает из-за кол-ва активных
+switcher.vars._turnOffAllFriends = function() {
+	
+	var
+		vars 	= switcher.vars,
+		arr 	= vars._friendsArgsArr,
+		i		= arr.length;
+		
+		
+	// По аргументам
+	while(i--) {
+		if(Array.isArray(arr[i])) {
+			
+			e = arr[i].length;
+		
+			// По массиву в одном из аргументов
+			while(e--) {
+				
+				k = arr[i].length;
+				
+				// По тому же массиву
+				while(k--) {
+					
+					// Если находим себя, то пропускаем
+					if(arr[i][e] !== arr[i][k]) {
+						
+						// Отключаем
+						arr[i][e].clearCache();
+						arr[i][e].turnOff();
+						
+					}
+					
+				}
+				
+			}
+
+		}
+	}
 	
 };
 
+// Проверяет дружественные объекты. Метод не дает отключить дружественные объекты, если они включаются друг с другом. Но отключаются при активации других из enemies
+switcher.vars.checkFriends = function(clickObj, cacheObj) {
+	
+	var
+		arr 	= clickObj._friendsObjArr,
+		i 		= clickObj._friendsObjArr.length;
+	
+	
+	// Элементы объекта по которому кликнули сравниваются с предыдущем объектом из кеша
+	while(i--) {
+		if(arr[i] === cacheObj) {
+			return true;
+		}
+	}
+	
+	return false;
+};
+
+
+// Основной метод
 switcher.items = function (userConfig) {
 
 	// =============================== Vars
@@ -90,8 +208,10 @@ switcher.items = function (userConfig) {
 		
 		// enemies
 		_SwVars = switcher.vars,
-		_enemyObserver = _SwVars._enemyObserver;	// Наблюдатель
+		_enemyObserver = _SwVars._enemyObserver;	// Метод наблюдателя. 
 
+		// friends
+		R._friendsObjArr = []; // массив с дружественными объектами
 		
 		// Конфиг
 		R._cfg = {
@@ -139,7 +259,7 @@ switcher.items = function (userConfig) {
 		}
 	};
 	
-	// Возвращает id из quey строки. #abc li a => abc.
+	// Возвращает id из query строки. #abc li a => abc.
 	R._getId = function (str) {
 		return document.getElementById(str.match(/#([\w\d_-]+)/i)[1]);
 	};
@@ -165,7 +285,7 @@ switcher.items = function (userConfig) {
 	// Добавляет блоки
 	R.addBlocks = function (QSA, turnOn, turnOff) {
 		
-		R._blocks.arr 		= 	document.querySelectorAll(QSA);
+		R._blocks.arr 	= 	document.querySelectorAll(QSA);
 		
 		if(typeof turnOn === "function") {
 			R._blocks.turnOn	= 	turnOn;
