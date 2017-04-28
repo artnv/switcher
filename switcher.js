@@ -328,6 +328,11 @@ switcher.items = function (userConfig) {
 
 			while(i--) {
 				
+				// Свойство (позиция элемента) доступное внутри обработчика
+				blocks.arr[i].index = i;
+				tabs.arr[i].index = i;
+				
+				
 				blocks.turnOff.call(blocks.arr[i]);
 				
 				if(tabs.turnOff) {
@@ -338,6 +343,10 @@ switcher.items = function (userConfig) {
 
 		} else { // Все последующие запуски, после очистки
 			
+				// Свойство (позиция элемента) доступное внутри обработчика
+				blocks.arr[_cacheElement].index = _cacheElement;
+				tabs.arr[_cacheElement].index = _cacheElement;
+				
 			// Выключаем предыдущие элементы, блоки и табы
 			blocks.turnOff.call(blocks.arr[_cacheElement]);
 			
@@ -414,6 +423,9 @@ switcher.items = function (userConfig) {
 						_enemyObserver(this);
 					}
 					
+					// Свойство (позиция элемента) доступное внутри обработчика
+					blocks.arr[i].index = i;
+					tabs.arr[i].index = i;
 					
 					// Включение блоков
 					blocks.turnOn.call(blocks.arr[i]);
