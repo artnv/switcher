@@ -1,3 +1,8 @@
+/*
+	switcher.js 
+	v0.4.0
+*/
+
 var switcher = {};
 
 switcher.vars = {
