@@ -319,21 +319,24 @@ switcher.items = function (userConfig) {
 	R.turnOff = function() {
 		
 		var 
-			i 		= R._tabs.arr.length,
-			tabs 	= R._tabs,
-			blocks	= R._blocks;
+			i 				= R._tabs.arr.length,
+			tabs 			= R._tabs,
+			blocks			= R._blocks,
+			blocksEnabled	= false; // Для того чтобы можно было использовать только табы без блоков
 		
+		if(blocks.arr && blocks.arr.length > 0) { blocksEnabled = true; }
+			
 		// Если первый запуск, отключаем все элементы
 		if(typeof _cacheElement !== "number") {
 
 			while(i--) {
 				
 				// Свойство (позиция элемента) доступное внутри обработчика
-				blocks.arr[i].index = i;
-				tabs.arr[i].index = i;
+				if(blocksEnabled) { blocks.arr[i].index = i; }
+				tabs.arr[i].index 		= i;
 				
 				
-				blocks.turnOff.call(blocks.arr[i]);
+				if(blocksEnabled) { blocks.turnOff.call(blocks.arr[i]) };
 				
 				if(tabs.turnOff) {
 					tabs.turnOff.call(tabs.arr[i]);
@@ -344,11 +347,11 @@ switcher.items = function (userConfig) {
 		} else { // Все последующие запуски, после очистки
 			
 				// Свойство (позиция элемента) доступное внутри обработчика
-				blocks.arr[_cacheElement].index = _cacheElement;
+				if(blocksEnabled) { blocks.arr[_cacheElement].index = _cacheElement; }
 				tabs.arr[_cacheElement].index = _cacheElement;
 				
 			// Выключаем предыдущие элементы, блоки и табы
-			blocks.turnOff.call(blocks.arr[_cacheElement]);
+			if(blocksEnabled) { blocks.turnOff.call(blocks.arr[_cacheElement]); }
 			
 			if(tabs.turnOff) {
 				tabs.turnOff.call(tabs.arr[_cacheElement]);
@@ -367,7 +370,11 @@ switcher.items = function (userConfig) {
 			i		= arrLn,
 			tabs 	= R._tabs,
 			blocks	= R._blocks,
-			cfg		= R._cfg;
+			cfg		= R._cfg,
+			blocksEnabled	= false; // Для того чтобы можно было использовать только табы без блоков
+			
+			
+		if(blocks.arr && blocks.arr.length > 0) { blocksEnabled = true; }
 		
 		// формирование функции + дополнительная проверка на допустимый лимит в цифрах
 		switch(typeof ObjOrNum) {
@@ -424,11 +431,11 @@ switcher.items = function (userConfig) {
 					}
 					
 					// Свойство (позиция элемента) доступное внутри обработчика
-					blocks.arr[i].index = i;
+					if(blocksEnabled) { blocks.arr[i].index = i; }
 					tabs.arr[i].index = i;
 					
 					// Включение блоков
-					blocks.turnOn.call(blocks.arr[i]);
+					if(blocksEnabled) { blocks.turnOn.call(blocks.arr[i]); }
 					
 					// и табов
 					if(tabs.turnOn) {
