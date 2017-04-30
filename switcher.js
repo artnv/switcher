@@ -1,6 +1,6 @@
 /*
 	switcher.js 
-	v0.4.0
+	v0.4.1
 */
 
 var switcher = {};
@@ -329,10 +329,13 @@ switcher.items = function (userConfig) {
 			blocks			= R._blocks,
 			blocksEnabled	= false; // Для того чтобы можно было использовать только табы без блоков
 		
-		if(blocks.arr && blocks.arr.length > 0) { blocksEnabled = true; }
+		if(blocks.arr && blocks.arr.length > 0) { 
+			blocksEnabled = true;
+			this.clearCache(); 
+		}
 			
 		// Если первый запуск, отключаем все элементы
-		if(typeof _cacheElement !== "number") {
+		if(typeof _cacheElement !== "number") { // default: _cacheElement = null
 
 			while(i--) {
 				
@@ -350,7 +353,7 @@ switcher.items = function (userConfig) {
 			}
 
 		} else { // Все последующие запуски, после очистки
-			
+
 				// Свойство (позиция элемента) доступное внутри обработчика
 				if(blocksEnabled) { blocks.arr[_cacheElement].index = _cacheElement; }
 				tabs.arr[_cacheElement].index = _cacheElement;
