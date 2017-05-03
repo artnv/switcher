@@ -1,6 +1,6 @@
 /*
 	switcher.js 
-	v0.5
+	v0.5.1
 */
 var switcher = (function() {
 	
@@ -288,10 +288,26 @@ var switcher = (function() {
 			_lock = false;
 		};
 		
+		// Присваивает будущие, общие методы к табам и блокам, которые будут доступны через this.*, внутри функций-обработчиков
+		R._addGeneralMethods = function(arr) {
+			var
+				i = arr.length;
+				
+			while(i--) {
+				arr[i].stop = this.stop;
+				arr[i].next = this.next;
+			}
+		};
+		
 		// Добавляет блоки
 		R.addBlocks = function (QSA, turnOn, turnOff) {
 			
-			R._blocks.arr 	= 	document.querySelectorAll(QSA);
+			var
+				arr = document.querySelectorAll(QSA);
+				
+			// Добавляем методы
+			R._addGeneralMethods(arr);
+			R._blocks.arr = arr;
 			
 			if(typeof turnOn === "function") {
 				R._blocks.turnOn	= 	turnOn;
@@ -306,7 +322,13 @@ var switcher = (function() {
 		// Добавляет табы-переключатели
 		R.addTabs = function (QSA, turnOn, turnOff) {
 			
-			R._tabs.arr 		= 	document.querySelectorAll(QSA);
+			var
+				arr = document.querySelectorAll(QSA);
+
+			// Добавляем методы
+			R._addGeneralMethods(arr);
+			R._tabs.arr  = arr;
+			
 			R._tabs.parentElem	=	R._getId(QSA);
 			
 			if(typeof turnOn === "function") {
@@ -343,13 +365,9 @@ var switcher = (function() {
 					// Свойство (позиция элемента) доступное внутри обработчика
 					if(blocksEnabled) { 
 						blocks.arr[i].index = i;
-						blocks.arr[i].stop 	= this.stop;
-						blocks.arr[i].next 	= this.next;
 					}
 					
 					tabs.arr[i].index 	= i;
-					tabs.arr[i].stop 	= this.stop;
-					tabs.arr[i].next 	= this.next;
 					
 					if(blocksEnabled) { blocks.turnOff.call(blocks.arr[i]) };
 					
@@ -363,14 +381,10 @@ var switcher = (function() {
 
 					// Свойство (позиция элемента) доступное внутри обработчика
 					if(blocksEnabled) { 
-						blocks.arr[_cacheElement].index = _cacheElement; 
-						blocks.arr[_cacheElement].stop 	= this.stop;
-						blocks.arr[_cacheElement].next 	= this.next;
+						blocks.arr[_cacheElement].index = _cacheElement;
 					}
 					
 					tabs.arr[_cacheElement].index = _cacheElement;
-					tabs.arr[_cacheElement].stop 	= this.stop;
-					tabs.arr[_cacheElement].next 	= this.next;
 					
 				// Выключаем предыдущие элементы, блоки и табы
 				if(blocksEnabled) { blocks.turnOff.call(blocks.arr[_cacheElement]); }
@@ -395,7 +409,7 @@ var switcher = (function() {
 				cfg		= R._cfg,
 				blocksEnabled	= false; // Для того чтобы можно было использовать только табы без блоков
 				
-				
+			// Если есть еще и блоки
 			if(blocks.arr && blocks.arr.length > 0) { blocksEnabled = true; }
 			
 			// формирование функции + дополнительная проверка на допустимый лимит в цифрах
@@ -403,7 +417,11 @@ var switcher = (function() {
 				case "object":
 				
 					check = function(i) {
-						if(ObjOrNum === tabs.arr[i]) return true; else return false;
+						if(ObjOrNum === tabs.arr[i]) {
+							return true;
+						} else {
+							return false;
+						}
 					};
 					
 				break;
@@ -415,7 +433,11 @@ var switcher = (function() {
 					}
 				
 					check = function(i) {
-						if(ObjOrNum === i) return true; else return false;
+						if(ObjOrNum === i) {
+							return true;
+						} else {
+							return false;
+						}
 					};
 			
 				break;
@@ -452,16 +474,13 @@ var switcher = (function() {
 							_enemyObserver(this);
 						}
 						
+						
 						// Свойство (позиция элемента) доступное внутри обработчика
 						if(blocksEnabled) { 
-							blocks.arr[i].index = i; 
-							blocks.arr[i].stop 	= this.stop;
-							blocks.arr[i].next 	= this.next;
+							blocks.arr[i].index = i;
 						}
 						
-						tabs.arr[i].index 	= i;
-						tabs.arr[i].stop 	= this.stop;
-						tabs.arr[i].next 	= this.next;		
+						tabs.arr[i].index 	= i;		
 						
 						
 						// Включение блоков
