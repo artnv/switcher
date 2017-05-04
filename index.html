@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Switcher.js</title>
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
+
+<link rel="stylesheet" type="text/css" href="examples/main.css" />
+
+</head>
+<body>
+
+<div class="main">
+
+
+	<h1>Switcher.js</h1>
+	<p>Это библиотека для переключения элементов на веб-странице. В минифицированном виде весит <b>3кб</b>!</p>
+	<p>На этой странице демонстрируется функционал, а описание методов и свойств в readme: <a href="https://github.com/artnv/switcher">https://github.com/artnv/switcher</a></p>
+	<div class="line"></div>
+
+	
+	<h2>1. Простое переключение</h2>
+	<p>Используются методы <span class="s">.addTabs()</span> и <span class="s">.addBlocks()</span>, а для включения таба по умолчанию метод <span class="s">.turnOn(1)</span>где "1" это позиция элемента, который будет включен. Отсчет с нуля.</p>
+	
+	<div class="example">
+	
+		<div id="tab_1" class="tabs">
+			<span>html</span><span>js</span><span>css</span>
+		</div>
+		
+		<div id="block_1" class="blocks">
+			<span>1</span>
+			<span>2</span>
+			<span>3</span>
+		</div>
+	</div><!--/example-->	
+	
+	
+	
+	<h2>2. Табы без блоков</h2>
+	<p>Можно просто использовать <span class="s">.addTabs()</span>, для элементов не требующих блоков</p>
+	<div class="example">
+	
+		<div id="exmp2_tab_1" class="tabs">
+			<span>html</span><span>js</span><span>css</span>
+		</div>
+		
+	</div><!--/example-->		
+	
+	
+	
+	<h2>3. Простое переключение и отключение</h2>
+	<p>Для отключение элемента при повторном нажатии следует передать объект со свойством <span class="s">switchers.items({backClickTurnOff: true})</span></p> 
+	<div class="example">
+	
+		<div id="tab_2" class="tabs">
+			<span>html</span><span>js</span><span>css</span>
+		</div>
+		
+		<div id="block_2" class="blocks">
+			<span>1</span>
+			<span>2</span>
+			<span>3</span>
+		</div>
+	</div><!--/example-->	
+	
+	
+	
+	<h2>4. Переключение с событием mouseover</h2>
+	<p>Так же можно назначить и другой обработчик событий, передав одно из стандартных свойств в качестве аргумента: "onclick", "mouseover" и т.д. <span class="s">switchers.items({eventMethod: "mouseover"})</span></p>
+	<div class="example">
+	
+		<div id="tab_3" class="tabs">
+			<span>html</span><span>js</span><span>css</span>
+		</div>
+		
+		<div id="block_3" class="blocks">
+			<span>1</span>
+			<span>2</span>
+			<span>3</span>
+		</div>
+	</div><!--/example-->	
+	
+	
+	
+	<h2>5. Привязка к одиночному элементу</h2>
+	<p>Во всех вариантах привязка осуществлялась автоматически, последовательно, к позиции элемента из коллекции NodeList. А сейчас привязывается к id-табу и к id-блоку. Это удобно для произвольного расположения на странице</p>
+	<div class="example">
+	
+		<div id="once_tab" class="tabs">Нажми</div>
+		<div id="once_block" class="blocks">Привязка только к id</div>
+		
+	</div><!--/example-->
+	
+	
+	<h2>6. Индекс элемента</h2>
+	<p>Внутри передаваемых функций-обработчиков <span class="s">.addTabs("#id a", Функция включения, Функция отключения)</span> и <span class="s">.addBlocks("#id ul li", Функция, Функция)</span>, будет доступно свойство как внутри таба так и внутри блока: <span class="s">this.index</span> – оно содержит позицию элемента в текущей коллекции</p>
+	<div class="example">
+	
+		<div id="tab_5" class="tabs">
+			<span>яблоко</span>
+			<span>апельсин</span>
+			<span>банан</span>
+			<span>груша</span>
+			<span>персик</span>
+			<span>абрикос</span>
+		</div>
+		
+		<div id="block_5" class="blocks">
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+		</div>
+		
+	</div><!--/example-->		
+	
+	<h2>7. Вертикальный вариант</h2>
+	<p>Один из вариантов расположения. Табы и блоки можно располагать произвольно на странице</p>
+	<div class="example">
+	
+		<div id="tab_6" class="tabs">
+			<span>Закат на Дону</span>
+			<span>Морозное утро</span>
+			<span>Рассвет</span>
+			<span>Зимние покатушки</span>
+			<span>По полям</span>
+			<span>Макро</span>
+		</div>
+		
+		<div id="block_6" class="blocks">
+			<img src="examples/imgs/Wklb_ifGRb8.jpg">
+			<img src="examples/imgs/Jsl0rA38Dlk.jpg">
+			<img src="examples/imgs/frjvSK4hRpM.jpg">
+			<img src="examples/imgs/cP9cdh8ATCk.jpg">
+			<img src="examples/imgs/bJBgHzO8fyI.jpg">
+			<img src="examples/imgs/8L__XjpS41I.jpg">		
+		</div>
+		
+	</div><!--/example-->	
+		
+		
+	<h2>8. С анимацией</h2>
+	<p>Анимация не часть функционала, но ее легко сделать</p>
+	<div class="example">
+	
+		<div id="tab_7" class="tabs">
+			<span>Закат на Дону</span>
+			<span>Морозное утро</span>
+			<span>Рассвет</span>
+			<span>Зимние покатушки</span>
+			<span>По полям</span>
+			<span>Макро</span>
+		</div>
+		
+		<div id="block_7" class="blocks">
+			<img src="examples/imgs/Wklb_ifGRb8.jpg">
+			<img src="examples/imgs/Jsl0rA38Dlk.jpg">
+			<img src="examples/imgs/frjvSK4hRpM.jpg">
+			<img src="examples/imgs/cP9cdh8ATCk.jpg">
+			<img src="examples/imgs/bJBgHzO8fyI.jpg">
+			<img src="examples/imgs/8L__XjpS41I.jpg">		
+		</div>
+		
+	</div><!--/example-->		
+	
+	
+	<h2>9. Анимация с блокировщиком</h2>
+	<p><span class="s">this.stop()</span> – блокирует реакцию табов на события, пока не завершится действие внутри блока и не вызовется метод <span class="s">this.next()</span> Эти методы доступны внутри функций-обработчиков, так же как и свойство <span class="s">this.index</span></p>
+	<div class="example">
+	
+		<div id="tab_8" class="tabs">
+			<span>Закат на Дону</span>
+			<span>Морозное утро</span>
+			<span>Рассвет</span>
+			<span>Зимние покатушки</span>
+			<span>По полям</span>
+			<span>Макро</span>
+		</div>
+		
+		<div id="block_8" class="blocks">
+			<img src="examples/imgs/Wklb_ifGRb8.jpg">
+			<img src="examples/imgs/Jsl0rA38Dlk.jpg">
+			<img src="examples/imgs/frjvSK4hRpM.jpg">
+			<img src="examples/imgs/cP9cdh8ATCk.jpg">
+			<img src="examples/imgs/bJBgHzO8fyI.jpg">
+			<img src="examples/imgs/8L__XjpS41I.jpg">		
+		</div>
+		
+	</div><!--/example-->	
+	
+	
+	<h2>10. Работа методов .addEnemies() и .addFriends()</h2>
+	<p>И так, добавляем все объекты в <span class="s">.addEnemies(a, b, c, d)</span>, порядок и количество аргументов не ограниченно. Теперь они будут конфликтовать между собой, т.е. если один включится, то все остальные выключатся.</p>
+	<p>А, <span class="s">.addFriends([a, c])</span> следует вызывать после <span class="s">.addEnemies(a, b, c, d)</span>. Этот метод заставляет дружить конфликтные объекты, например если запустится объект <span class="s">a</span>, он не отключит объект <span class="s">c</span>, но отключит все остальные. В качестве аргументов следует передавать массивы состоящие из объектов, например: <span class="s">.addFriends([a, c], [b, d, d], [e, f, g, k])</span>. Группы из массивов образуют неконфликтные комбинации</p><br/><br/>
+	<p>В этом примере все объекты добавлены в <span class="s">.addEnemies(1, 2, 3, 4)</span>, а первый и третий в <span class="s">addFriends([1, 3])</span></p>
+	<div class="example">
+	
+		<!--1-->
+		<div id="exm10_tab_1" class="exm10_tab">
+			<strong>hover</strong></br>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+		</div>
+		
+		<div id="exm10_block_1" class="exm10_block">
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>	
+		</div>
+		<br/><br/>		
+		
+		<!--2-->
+		<div id="exm10_tab_2" class="exm10_tab">
+			<strong>hover</strong><br/>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>			
+			<span></span>
+			<span></span>
+			<span></span>
+		</div>
+		
+		<div id="exm10_block_2" class="exm10_block">
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>			
+			<span></span>
+			<span></span>
+			<span></span>	
+		</div>
+		<br/><br/>
+		
+		<!--3-->
+		<div id="exm10_tab_3" class="exm10_tab">
+			<strong>click</strong></br>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+		</div>
+		
+		<div id="exm10_block_3" class="exm10_block">
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>	
+		</div>
+		<br/><br/>	
+		
+		
+		<!--4-->
+		<div id="exm10_tab_4" class="exm10_tab">
+			<strong>Double click</strong></br>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>			
+			<span></span>
+		</div>
+		
+		<div id="exm10_block_4" class="exm10_block">
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>			
+			<span></span>
+		</div>
+		<br/><br/>	
+		
+		
+	</div><!--/example-->
+	
+	
+	<h2>11. Объединение нескольких табов и блоков</h2>
+	<p>Более реальный пример использования</p>
+	<div class="example" style="border-bottom: 1px solid #ccc;padding-bottom: 50px;">
+	
+		<div class="header">
+		
+			<div class="right">
+				
+				<span id="city" class="f_right">Выберите ваш город</span>
+				
+				<div class="lang f_right" id="lang">
+					<span>rus</span> / <span>eng</span> / <span>de</span>
+				</div>
+				
+				<div class="f_right">
+					<div id="menu">Меню &#9662;</div>
+					<div id="menu_box">
+						<table>
+							<tr>
+								<td>Меню</td>
+								<td>Субменю</td>
+								<td>Еще</td>
+							</tr>					
+							<tr>
+								<td>Товары</td>
+								<td>Каталог</td>
+								<td>Контакты</td>
+							</tr>	
+							<tr>
+								<td>Погода</td>
+								<td>Расписания</td>
+								<td>Такси</td>
+							</tr>	
+							<tr>
+								<td>Фотки</td>
+								<td>Блоги</td>
+								<td>Работа</td>
+							</tr>	
+							<tr>
+								<td>Недвижимость</td>
+								<td>Радио</td>
+								<td>Программы</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+	
+			</div><!--/right-->
+
+			
+			<span class="logo f_left">Switcher.js</span>
+
+		</div>
+		
+	
+		<div id="city_menu">
+		<span id="xbtn">x</span>
+		<h3>Выберите ваш город</h3>
+		<table>
+			<tr>
+				<td>Абакан</td>
+				<td>Архангельск</td>
+				<td>Астрахань</td>
+				<td>Барнаул</td>
+			</tr>					
+			<tr>
+				<td>Белгород</td>
+				<td>Бийск</td>
+				<td>Братск</td>
+				<td>Брянск</td>
+			</tr>	
+			<tr>
+				<td>Владивосток</td>
+				<td>Владимир</td>
+				<td>Волгоград</td>
+				<td>Вологда</td>
+			</tr>	
+			<tr>
+				<td>Воронеж</td>
+				<td>Екатеринбург</td>
+				<td>Иваново</td>
+				<td>Ижевск</td>
+			</tr>	
+			<tr>
+				<td>Иркутск</td>
+				<td>Казань</td>
+				<td>Калуга</td>
+				<td>Кемерово</td>
+			</tr>		
+			<tr>
+				<td>Киров</td>
+				<td>Комсомольск-на-Амуре</td>
+				<td>Кострома</td>
+				<td>Краснодар</td>
+			</tr>		
+			<tr>
+				<td>Красноярск</td>
+				<td>Курск</td>
+				<td>Липецк</td>
+				<td>Москва</td>
+			</tr>		
+			<tr>
+				<td>Магнитогорск</td>
+				<td>Миасс</td>
+				<td>Мурманск</td>
+				<td>Набережные Челны</td>
+			</tr>		
+			<tr>
+				<td>Нижний Новгород</td>
+				<td>Нижний Тагил</td>
+				<td>Новокузнецк</td>
+				<td>Новороссийск</td>
+			</tr>		
+			<tr>
+				<td>Новосибирск</td>
+				<td>Омск</td>
+				<td>Орел</td>
+				<td>Оренбург</td>
+			</tr>		
+			<tr>
+				<td>Орск</td>
+				<td>Пенза</td>
+				<td>Пермь</td>
+				<td>Петрозаводск</td>
+			</tr>		
+			<tr>
+				<td>Пятигорск</td>
+				<td>Ростов-на-Дону</td>
+				<td>Рязань</td>
+				<td>Самара</td>
+			</tr>		
+			<tr>
+				<td>Санкт-Петербург</td>
+				<td>Саранск</td>
+				<td>Саратов</td>
+				<td>Севастополь</td>
+			</tr>		
+			<tr>
+				<td>Симферополь</td>
+				<td>Смоленск</td>
+				<td>Сочи</td>
+				<td>Ставрополь</td>
+			</tr>		
+			<tr>
+				<td>Стерлитамак</td>
+				<td>Сургут</td>
+				<td>Сыктывкар</td>
+				<td>Тамбов</td>
+			</tr>
+				<td>Тверь</td>
+				<td>Тольятти</td>
+				<td>Томск</td>
+				<td>Тула</td>
+			</tr>
+				<td>Тюмень</td>
+				<td>Улан-Удэ</td>
+				<td>Ульяновск</td>
+				<td>Уфа</td>
+			</tr>
+				<td>Хабаровск</td>
+				<td>Чебоксары</td>
+				<td>Челябинск</td>
+				<td>Череповец</td>
+			</tr>
+				<td>Чита</td>
+				<td>Ярославль</td>
+				<td>&nbsp;</td>
+				<td>&nbsp;</td>
+			</tr>
+		</table>
+		</div><!--city_menu-->
+		
+	
+		<div id="tab_9" class="tabs left_menu">
+			<div class="h">Категории</div>
+			<span>Туризм</span>
+			<span>Байдарки</span>
+			<span>Альпинизм</span>
+			<span>Велосипед</span>
+			<span>Рюкзаки</span>
+			<span>Снаряжение</span>
+		</div>
+		
+		<div id="block_9" class="blocks left_boxes">
+		
+			<span>
+			<h3>Lorem ipsum dolor sit amet</h3>
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <img src="examples/imgs/Wklb_ifGRb8.jpg"> Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+			
+			</span>	
+			
+			<span>
+			<h3>Sed ut perspiciatis unde omnis</h3>
+			Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur
+
+			<img src="examples/imgs/Jsl0rA38Dlk.jpg">
+			</span>			
+			
+			<span>
+			<h3>At vero eos et accusamus et iusto odio</h3>
+			At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
+			<img src="examples/imgs/frjvSK4hRpM.jpg">
+			</span>			
+			
+			<span>
+			<h3>Laboris nisi ut aliquip</h3>
+			<img src="examples/imgs/cP9cdh8ATCk.jpg">
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.	
+			</span>			
+			
+			<span>
+			<h3>Duis aute irure dolor in reprehenderit</h3>
+			Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+			<img src="examples/imgs/bJBgHzO8fyI.jpg">	
+			</span>			
+			
+			<span>
+			<h3>Sed do eiusmod tempor incididunt ut labore</h3>
+			Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+			<img src="examples/imgs/8L__XjpS41I.jpg">	
+			</span>
+				
+		</div>
+		
+	</div><!--/example-->
+</div>
+
+<!-- ========================================= Switcher -->
+<script src="switcher.js"></script>
+
+<!-- ========================================= Examples -->
+<script src="examples/example_1.js"></script>
+<script src="examples/example_2.js"></script>
+<script src="examples/example_3.js"></script>
+<script src="examples/example_4.js"></script>
+<script src="examples/example_5.js"></script>
+<script src="examples/example_6.js"></script>
+<script src="examples/example_7.js"></script>
+<script src="examples/example_8.js"></script>
+<script src="examples/example_9.js"></script>
+<script src="examples/example_10.js"></script>
+<script src="examples/example_11.js"></script>
+
+
+</body>
+</html>
